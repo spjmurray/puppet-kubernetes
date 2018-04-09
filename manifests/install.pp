@@ -6,7 +6,7 @@ class kubernetes::install {
 
   include ::apt
 
-  Class['::apt'] -> Package <||>
+  Class['::apt::update'] -> Package <||>
 
   $packages = [
     'docker.io',
