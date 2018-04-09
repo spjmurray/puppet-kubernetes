@@ -1,0 +1,29 @@
+{
+  "name": "spjmurray-kubernetes",
+  "version": "0.0.1",
+  "author": "Simon Murray",
+  "summary": "Simple Kubernetes installer",
+  "license": "Apache-2.0",
+  "source": "https://github.com/spjmurray/puppet-kubernetes",
+  "project_page": "https://github.com/spjmurray/puppet-kubernetes",
+  "dependencies": [
+    {
+      "name": "puppetlabs/apt",
+      "version_requirement": ">= 4.5.1"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "16.04"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.0.0"
+    }
+  ]
+}
