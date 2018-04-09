@@ -25,21 +25,6 @@ class kubernetes::install {
     },
   }
 
-  file { '/etc/docker':
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-  } ->
-
-  file { '/etc/docker/daemon.json':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    content =>  '{"exec-opts": ["native.cgroupdriver=systemd"]}',
-  } ->
-
   package { $packages: }
 
 }

@@ -32,7 +32,7 @@ class kubernetes::config {
     source =>  'https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml',
   } ->
 
-  exec { "/usr/bin/kubectl apply -f /home/${user}/kube-flannel.yaml":
+  exec { "/usr/bin/kubectl apply -f /home/${kubernetes::user}/kube-flannel.yaml":
     unless =>  '/usr/bin/kubectl get daemonset kube-flannel-ds -n kube-system',
   }
 
