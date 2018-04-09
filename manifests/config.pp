@@ -1,4 +1,4 @@
-i# == Class: kubernetes::config
+# == Class: kubernetes::config
 #
 # Configures a kubernetes cluster with kubeadm
 #
