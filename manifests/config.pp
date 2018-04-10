@@ -10,6 +10,9 @@ class kubernetes::config {
   }
 
   $_kube_config = '/etc/kubernetes/admin.conf'
+  $_flannel_source = 'https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml'
+  $_flannel_target_dir = "/home/${kubernetes::user}"
+  $_flannel_target = "${_flannel_target_dir}/kube-flannel.yml"
 
   exec { "/usr/bin/kubeadm init --pod-network-cidr=${kubernetes::overlay_prefix}":
     creates =>  $_kube_config,
@@ -26,15 +29,17 @@ class kubernetes::config {
     source =>  '/etc/kubernetes/admin.conf',
   } ->
 
-  file { "/home/${kubernetes::user}/kube-flannel.yaml":
-    ensure => file,
-    mode   => '0644',
-    source =>  'https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml',
+  # Although 'file' supports http references, there is a bug where it doesn't
+  # decompress the response body!
+  exec { "/usr/bin/wget -q $_flannel_source":
+    creates => $_flannel_target,
+    cwd     => $_flannel_target_dir,
+    user    => $kubernetes::user,
+    group   => $kubernetes::group,
   } ->
 
-  exec { "/usr/bin/kubectl apply -f /home/${kubernetes::user}/kube-flannel.yaml":
+  exec { "/usr/bin/kubectl apply -f ${_flannel_target}":
     unless =>  '/usr/bin/kubectl get daemonset kube-flannel-ds -n kube-system',
   }
 
 }
-
