@@ -14,7 +14,14 @@ class kubernetes::config {
   $_flannel_target_dir = "/home/${kubernetes::user}"
   $_flannel_target = "${_flannel_target_dir}/kube-flannel.yml"
 
-  exec { "/usr/bin/kubeadm init --pod-network-cidr=${kubernetes::overlay_prefix}":
+  if $kubernetes::subject_alt_names != undef {
+    $_kubeadm_sans_temp = join($kubernetes::subject_alt_names, ',')
+    $_kubeadm_sans = "--apiserver-cert-extra-sans ${_kubeadm_sans_temp}"
+  } else {
+    $_kubeadm_sans = ''
+  }
+
+  exec { "/usr/bin/kubeadm init --pod-network-cidr=${kubernetes::overlay_prefix} ${_kubeadm_sans}":
     creates =>  $_kube_config,
   } ->
 
@@ -40,6 +47,10 @@ class kubernetes::config {
 
   exec { "/usr/bin/kubectl apply -f ${_flannel_target}":
     unless =>  '/usr/bin/kubectl get daemonset kube-flannel-ds -n kube-system',
+  } ->
+
+  exec { '/usr/bin/kubectl taint nodes --all node-role.kubernetes.io/master-':
+    # Todo: make idempotent
   }
 
 }
