@@ -32,7 +32,7 @@ class kubernetes::install {
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
-    content => "DOCKER_OPTS='-H tcp://0.0.0.0:${kubernetes::docker_port}'",
+    content => "DOCKER_OPTS='-H tcp://0.0.0.0:${kubernetes::docker_port}' --tlsverify --tlscacert=${kubernetes::cacert} --tlscert=${kubernetes::cert} --tlskey=${kubernetes::key}",
   } ->
 
   package { $packages: }

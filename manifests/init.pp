@@ -16,11 +16,23 @@
 # [*docker_port*]
 #   Port to expose dockerd on
 #
+# [*cacert*]
+#   CA certificate for client authentication
+#
+# [*cert*]
+#   Server certificate for authentication and encryption
+#
+# [*key*]
+#   Server key for decryption
+#
 class kubernetes (
   String $user = 'ubuntu',
   String $group = 'ubuntu',
   String $overlay_prefix = '10.0.0.0/16',
   Integer $docker_port = 2376,
+  String $cacert = '/etc/docker/ca.pem',
+  String $cert = '/etc/docker/cert.pem',
+  String $key = '/etc/docker/key.pem',
 ) {
 
   include ::kubernetes::install
