@@ -25,9 +25,6 @@
 # [*key*]
 #   Server key for decryption
 #
-# [*subject_alt_names*]
-#   Alternative names to add to the master certificate
-#
 class kubernetes (
   String $user = 'ubuntu',
   String $group = 'ubuntu',
@@ -36,9 +33,6 @@ class kubernetes (
   String $cacert = '/etc/docker/ca.pem',
   String $cert = '/etc/docker/cert.pem',
   String $key = '/etc/docker/key.pem',
-  Optional[Array[String, 1]] $subject_alt_names = [
-    '*.compute-1.amazonaws.com',
-  ],
 ) {
 
   include ::kubernetes::install
