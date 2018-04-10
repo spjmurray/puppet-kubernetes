@@ -20,7 +20,7 @@ class kubernetes (
   String $user = 'ubuntu',
   String $group = 'ubuntu',
   String $overlay_prefix = '10.0.0.0/16',
-  Integer $docker_port = 2375,
+  Integer $docker_port = 2376,
 ) {
 
   include ::kubernetes::install
