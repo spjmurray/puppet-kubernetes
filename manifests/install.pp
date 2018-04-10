@@ -25,6 +25,16 @@ class kubernetes::install {
     },
   }
 
+  # Expose dockerd via TCP
+  # Todo: --tlsverify should be set, but pki makes life more complex
+  file { '/etc/default/docker':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    content => "DOCKER_OPTS='-H tcp://0.0.0.0:${kubernetes::docker_port}'",
+  } ->
+
   package { $packages: }
 
 }
