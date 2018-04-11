@@ -11,7 +11,7 @@ class kubernetes::config {
 
   $_overlay_prefix = $kubernetes::overlay_prefix
   $_kube_config = '/etc/kubernetes/admin.conf'
-  $_flannel_target = "${_flannel_target_dir}/kube-flannel.yml"
+  $_flannel_target = "/home/${kubernetes::user}/kube-flannel.yml"
 
   exec { "/usr/bin/kubeadm init --pod-network-cidr=${_overlay_prefix} --apiserver-cert-extra-sans=${facts['ec2_metadata']['public-hostname']}":
     creates =>  $_kube_config,
