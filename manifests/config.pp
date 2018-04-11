@@ -13,9 +13,38 @@ class kubernetes::config {
   $_kube_config = '/etc/kubernetes/admin.conf'
   $_flannel_target = "/home/${kubernetes::user}/kube-flannel.yml"
 
-  exec { "/usr/bin/kubeadm init --pod-network-cidr=${_overlay_prefix} --apiserver-cert-extra-sans=${facts['ec2_metadata']['public-hostname']}":
-    creates =>  $_kube_config,
-  } ->
+  case $kubernetes::type {
+    'master': {
+      $_argument_list = [
+        "--token=${kubernetes::token}",
+        "--apiserver-cert-extra-sans=${facts['ec2_metadata']['public-hostname']}",
+        "--pod-network-cidr=${_overlay_prefix}",
+      ]
+
+      $_arguments = join($_argument_list, " ")
+
+      exec { "/usr/bin/kubeadm init ${_arguments}":
+        creates =>  $_kube_config,
+      } ->
+
+      File["/home/${kubernetes::user}/.kube"]
+    }
+
+    'slave': {
+      $_argument_list = [
+        "--token=${kubernetes::token}",
+        "--discovery-token-unsafe-skip-ca-verification",
+      ]
+
+      $_arguments = join($_argument_list, " ")
+
+      exec { "/usr/bin/kubeadm join ${_arguments} ${kubernetes::master}:${kubernetes::port}":
+        creates =>   $_kube_config,
+      } ->
+
+      File["/home/${kubernetes::user}/.kube"]
+    }
+  }
 
   file { "/home/${kubernetes::user}/.kube":
     ensure => directory,
