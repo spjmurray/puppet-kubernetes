@@ -51,8 +51,8 @@ class kubernetes (
   String $token = 'd7022a.8a64f18120664947',
 ) {
 
-  include ::kubernetes::install
-  include ::kubernetes::config
+  contain ::kubernetes::install
+  contain ::kubernetes::config
 
   Class['::kubernetes::install'] ->
   Class['::kubernetes::config']
