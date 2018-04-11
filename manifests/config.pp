@@ -9,12 +9,11 @@ class kubernetes::config {
     group =>  $kubernetes::group,
   }
 
+  $_overlay_prefix = $kubernetes::overlay_prefix
   $_kube_config = '/etc/kubernetes/admin.conf'
-  $_flannel_source = 'https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml'
-  $_flannel_target_dir = "/home/${kubernetes::user}"
   $_flannel_target = "${_flannel_target_dir}/kube-flannel.yml"
 
-  exec { "/usr/bin/kubeadm init --pod-network-cidr=${kubernetes::overlay_prefix} --apiserver-cert-extra-sans=${facts['ec2_metadata']['public-hostname']}":
+  exec { "/usr/bin/kubeadm init --pod-network-cidr=${_overlay_prefix} --apiserver-cert-extra-sans=${facts['ec2_metadata']['public-hostname']}":
     creates =>  $_kube_config,
   } ->
 
@@ -29,13 +28,10 @@ class kubernetes::config {
     source =>  '/etc/kubernetes/admin.conf',
   } ->
 
-  # Although 'file' supports http references, there is a bug where it doesn't
-  # decompress the response body!
-  exec { "/usr/bin/wget -q $_flannel_source":
-    creates => $_flannel_target,
-    cwd     => $_flannel_target_dir,
-    user    => $kubernetes::user,
-    group   => $kubernetes::group,
+  file { $_flannel_target:
+    ensure  => file,
+    mode    => '0644',
+    content => template('kubernetes/kube-flannel.yml.erb'),
   } ->
 
   exec { "/usr/bin/kubectl apply -f ${_flannel_target}":
