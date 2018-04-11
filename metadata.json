@@ -1,6 +1,6 @@
 {
   "name": "spjmurray-kubernetes",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "author": "Simon Murray",
   "summary": "Simple Kubernetes installer",
   "license": "Apache-2.0",
